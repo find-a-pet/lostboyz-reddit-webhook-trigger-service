@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  lostboyz-reddit-webhook-trigger:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 6969:80
