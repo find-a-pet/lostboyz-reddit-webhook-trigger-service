@@ -34,10 +34,6 @@ app = Flask(__name__)
 
 env_vars = "lostboyz"
 community = "VictoriaBC"
-test_webhook_srv_url = "https://httpbin.org/post" 
-
-# TODO: Update before deploying to production
-webhook_srv_url = "http://127.0.0.1:14003/api/v1/webhook"
 
 reddit = praw.Reddit(env_vars)
 subreddit = reddit.subreddit(community)
@@ -87,9 +83,15 @@ def trigger_webhook():
       """
       keys = dir(submission)
       if submission.link_flair_text == "Lost & Found" and "post_hint" in keys:
+
+        print("=============>>>>>>>>>>>> DEBUG 1")
+        print(os.environ)
+        print(os.environ['WEBHOOK_SRV_URL'])
+        pprint.pprint(vars(payload_factory(submission)))
+        print("<<<<<<<<<<<<<<============ DEBUG 1")
+
         pprint.pprint(vars(submission))
-        # test_r = requests.post(test_webhook_srv_url, json = payload_factory(submission))
-        r = requests.post(test_webhook_srv_url, json = payload_factory(submission))
+        r = requests.post(os.environ['WEBHOOK_SRV_URL'], json = payload_factory(submission))
         if r.status_code != requests.codes.created:
           r.raise_for_status()
         else:
